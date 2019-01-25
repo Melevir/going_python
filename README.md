@@ -1,2 +1,5 @@
 # going_python
-Бот, АПИ и слайды для интерактивного доклада на Pyladies
+
+[![Build Status](https://travis-ci.org/Melevir/going_python.svg?branch=master)](https://travis-ci.org/Melevir/going_python)
+
+API для интерактивного доклада на Pyladies
