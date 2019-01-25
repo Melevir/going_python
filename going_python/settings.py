@@ -4,7 +4,7 @@ import environ
 
 env = environ.Env(
     # set casting, default value
-    DEBUG=(bool, False)
+    DEBUG=(bool, False),
 )
 environ.Env.read_env()
 
@@ -54,8 +54,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'going_python.wsgi.application'
 
-DATABASES = dict()
-DATABASES['default'] = dj_database_url.parse(env('DATABASE_URL'), conn_max_age=600)
+DATABASES = {
+    'default': dj_database_url.parse(
+        env('DATABASE_URL'),
+        conn_max_age=600,
+    ),
+}
 
 AUTH_PASSWORD_VALIDATORS = [
     {

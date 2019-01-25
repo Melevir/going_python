@@ -7,7 +7,6 @@ def activate(request, **kwargs):
         return HttpResponse(status=405)
 
     question = Question.objects.get(id=kwargs['question_id'])
-    print(question)
 
     if question:
         for q in Question.objects.all():

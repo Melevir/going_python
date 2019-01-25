@@ -6,7 +6,7 @@ class Question(models.Model):
     is_active = models.BooleanField(default=False)
 
     def __str__(self):
-        return 'Question: {}'.format(self.question_text)
+        return 'Question: {0}'.format(self.question_text)
 
 
 class Choice(models.Model):
@@ -14,7 +14,7 @@ class Choice(models.Model):
     choice_text = models.CharField(max_length=200)
 
     def __str__(self):
-        return 'Choice: {}'.format(self.choice_text)
+        return 'Choice: {0}'.format(self.choice_text)
 
 
 class Vote(models.Model):
@@ -22,4 +22,4 @@ class Vote(models.Model):
     user_id = models.CharField(null=False, max_length=200)
 
     def __str__(self):
-        return 'Vote: User with id {} voted for {}'.format(self.user_id, self.choice.choice_text)
+        return 'Vote: User with id {0} voted for {1}'.format(self.user_id, self.choice.choice_text)
