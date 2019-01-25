@@ -1,4 +1,4 @@
 django==2.1.5
 psycopg2==2.7.6
-dj_database_url
-environ
+dj-database-url==0.5.0
+django-environ==0.4.5
