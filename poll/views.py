@@ -53,4 +53,3 @@ class VoteView(View):
         vote = Vote(choice=option, user_id=user_id)
         vote.save()
         return HttpResponse()
-
