@@ -47,4 +47,5 @@ class VoteView(View):
             return HttpResponseBadRequest()
 
         Vote.objects.create(choice=option, user_id=request.GET['user_id'])
+
         return HttpResponse()

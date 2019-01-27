@@ -16,11 +16,13 @@ class QuestionAdmin(admin.ModelAdmin):
         ChoiceInline,
     ]
 
+
 @admin.register(Choice)
 class ChoiceAdmin(admin.ModelAdmin):
     inlines = [
         VoteInline,
     ]
+
 
 @admin.register(Vote)
 class VoteAdmin(admin.ModelAdmin):
