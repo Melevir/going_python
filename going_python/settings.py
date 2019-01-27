@@ -1,6 +1,10 @@
 import os
-import dj_database_url
 import environ
+
+import dj_database_url
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 env = environ.Env(
     # set casting, default value
@@ -83,3 +87,11 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
+
+SENTRY_DSN = env('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration()]
+    )
