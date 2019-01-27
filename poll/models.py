@@ -12,9 +12,13 @@ class Question(models.Model):
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
+    weight = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return 'Choice: {0}'.format(self.choice_text)
+
+    class Meta:
+        ordering = ['weight']
 
 
 class Vote(models.Model):
