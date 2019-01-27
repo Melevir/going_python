@@ -49,3 +49,19 @@ class VoteView(View):
         Vote.objects.create(choice=option, user_id=request.GET['user_id'])
 
         return HttpResponse()
+
+
+class StatView(View):
+    def get(self, request, **kwargs):
+        try:
+            question = Question.objects.get(id=kwargs['question_id'])
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound()
+
+        choices = question.choices.all()
+        hits = [{'id': choice.id, 'hits': len(choice.votes.all())} for choice in choices]
+        data = {
+            'stat': hits,
+            }
+
+        return JsonResponse(data=data)
