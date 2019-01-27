@@ -3,6 +3,7 @@ from django.views import View
 from poll.models import Question, Choice, Vote
 from django.views.decorators.clickjacking import xframe_options_exempt
 
+
 class ActivationView(View):
     def post(self, request, **kwargs):
         question = Question.objects.get(id=kwargs['question_id'])
