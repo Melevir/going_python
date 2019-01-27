@@ -49,7 +49,7 @@ class StatView(View):
     def get(self, request, **kwargs):
         question = get_object_or_404(id=kwargs['question_id'])
         choices = question.choices.all()
-        hits = [{'id': choice.id, 'hits': len(choice.votes.all())} for choice in choices]
+        hits = [{'id': choice.id, 'hits': choice.votes.count()} for choice in choices]
         data = {
             'stat': hits,
         }
