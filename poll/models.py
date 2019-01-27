@@ -10,19 +10,19 @@ class Question(models.Model):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     weight = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return 'Choice: {0}'.format(self.choice_text)
+        return 'Choice: {0}, # of votes: {1}'.format(self.choice_text, len(self.votes.all()))
 
     class Meta:
         ordering = ['weight']
 
 
 class Vote(models.Model):
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, related_name='votes', on_delete=models.CASCADE)
     user_id = models.CharField(null=False, max_length=200)
 
     def __str__(self):
