@@ -10,7 +10,7 @@ class Question(models.Model):
 
 
 class Choice(models.Model):
-    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, related_name='choices', on_delete=models.CASCADE)
     choice_text = models.CharField(max_length=200)
     weight = models.PositiveSmallIntegerField(default=0)
 
@@ -22,7 +22,7 @@ class Choice(models.Model):
 
 
 class Vote(models.Model):
-    choice = models.ForeignKey(Choice, on_delete=models.CASCADE)
+    choice = models.ForeignKey(Choice, related_name='votes', on_delete=models.CASCADE)
     user_id = models.CharField(null=False, max_length=200)
 
     def __str__(self):
