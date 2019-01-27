@@ -47,11 +47,7 @@ class VoteView(View):
 
 class StatView(View):
     def get(self, request, **kwargs):
-        try:
-            question = Question.objects.get(id=kwargs['question_id'])
-        except ObjectDoesNotExist:
-            return HttpResponseNotFound()
-
+        question = get_object_or_404(id=kwargs['question_id'])
         choices = question.choices.all()
         hits = [{'id': choice.id, 'hits': len(choice.votes.all())} for choice in choices]
         data = {
