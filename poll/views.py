@@ -1,28 +1,29 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.views import View
 from poll.models import Question, Choice, Vote
-from django.views.decorators.clickjacking import xframe_options_exempt
+from django.core.exceptions import ObjectDoesNotExist
 
 
 class ActivationView(View):
     def post(self, request, **kwargs):
-        question = Question.objects.get(id=kwargs['question_id'])
-
-        if not question:
-            return HttpResponseNotFound
+        try:
+            question = Question.objects.get(id=kwargs['question_id'])
+        except ObjectDoesNotExist:
+            return HttpResponseNotFound()
 
         Question.objects.filter(is_active=True).update(is_active=False)
-        question.update(is_active=True)
+        question.is_active = True
+        question.save()
 
         return HttpResponse()
 
 
 class ActiveQuestionDetailView(View):
     def get(self, request):
-        question = Question.objects.get(is_active=True)
-
-        if not question:
-            return HttpResponseNotFound
+        try:
+            question = Question.objects.get(is_active=True)
+        except ObjectDoesNotExist:
+            HttpResponseNotFound()
 
         choices = question.choices.all()
         options = [{'id': choice.id, 'text': choice.choice_text} for choice in choices]
@@ -36,20 +37,14 @@ class ActiveQuestionDetailView(View):
 
 class VoteView(View):
     def post(self, request, **kwargs):
-        question = Question.objects.get(id=kwargs['question_id'])
-        option = Choice.objects.get(id=kwargs['option_id'])
-
-        if not (question and option):
+        try:
+            question = Question.objects.get(id=kwargs['question_id'])
+            option = Choice.objects.get(id=kwargs['option_id'])
+        except ObjectDoesNotExist:
             return HttpResponseNotFound()
 
-        if option.question != question or not question.is_active:
+        if option.question != question or not question.is_active or ('user_id' not in request.GET):
             return HttpResponseBadRequest()
 
-        try:
-            user_id = request.GET['user_id']
-        except KeyError:
-            return HttpResponseBadRequest()
-
-        vote = Vote(choice=option, user_id=user_id)
-        vote.save()
+        Vote.objects.create(choice=option, user_id=request.GET['user_id'])
         return HttpResponse()

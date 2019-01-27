@@ -15,7 +15,7 @@ class Choice(models.Model):
     weight = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
-        return 'Choice: {0}'.format(self.choice_text)
+        return 'Choice: {0}, # of votes: {1}'.format(self.choice_text, len(self.votes.all()))
 
     class Meta:
         ordering = ['weight']
