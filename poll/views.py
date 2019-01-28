@@ -1,8 +1,9 @@
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.views import View
-from poll.models import Question, Choice, Vote
+from poll.models import Question, Choice, Vote, UserCount
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import F
 
 
 class ActivationView(View):
@@ -26,6 +27,7 @@ class ActiveQuestionDetailView(View):
         options = [{'id': choice.id, 'text': choice.choice_text} for choice in choices]
         data = {
             'question_text': question.question_text,
+            'question_id': question.id,
             'options': options,
         }
 
@@ -54,4 +56,16 @@ class StatView(View):
             'stat': hits,
         }
 
+        return JsonResponse(data=data)
+
+
+class StartUserView(View):
+    def get(self, request):
+        UserCount.objects.filter(id=1).update(user_count=F('user_count') + 1)
+        return HttpResponse()
+
+
+class StartUserStatView(View):
+    def get(self, request):
+        data = {'total': UserCount.objects.first().user_count}
         return JsonResponse(data=data)

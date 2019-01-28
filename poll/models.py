@@ -27,3 +27,10 @@ class Vote(models.Model):
 
     def __str__(self):
         return 'Vote: User with id {0} voted for {1}'.format(self.user_id, self.choice.choice_text)
+
+
+class UserCount(models.Model):
+    user_count = models.PositiveSmallIntegerField(default=0)
+
+    def __str__(self):
+        return '# of users: {0}'.format(self.user_count)
