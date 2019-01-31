@@ -25,7 +25,7 @@ class ActiveQuestionDetailView(View):
         except ObjectDoesNotExist:
             return HttpResponseNotFound()
 
-        choices = question.choices.all().order_by('-pk')
+        choices = question.choices.all().order_by('pk')
         options = [{'id': choice.id, 'text': choice.choice_text} for choice in choices]
         data = {
             'question_text': question.question_text,
