@@ -1,9 +1,10 @@
+from datetime import datetime
 from django.http import HttpResponse, JsonResponse, HttpResponseNotFound, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404
 from django.views import View
 from poll.models import Question, Choice, Vote, UserCount
 from django.core.exceptions import ObjectDoesNotExist
-from django.db.models import F
+from django.db.models import Avg, Count, F, Q
 
 
 class ActivationView(View):
@@ -11,6 +12,7 @@ class ActivationView(View):
         question = get_object_or_404(id=kwargs['question_id'])
         Question.objects.filter(is_active=True).update(is_active=False)
         question.is_active = True
+        question.activation_datetime = datetime.now()
         question.save()
 
         return HttpResponse()
@@ -42,7 +44,11 @@ class VoteView(View):
         if option.question != question or not question.is_active or ('user_id' not in request.GET):
             return HttpResponseBadRequest()
 
-        Vote.objects.create(choice=option, user_id=request.GET['user_id'])
+        Vote.objects.create(
+            choice=option,
+            user_id=request.GET['user_id'],
+            vote_datetime=datetime.now(),
+        )
 
         return HttpResponse()
 
@@ -52,11 +58,7 @@ class StatView(View):
         question = get_object_or_404(id=kwargs['question_id'])
         choices = question.choices.all()
         hits = [{'id': choice.id, 'hits': choice.votes.count()} for choice in choices]
-        data = {
-            'stat': hits,
-        }
-
-        return JsonResponse(data=data)
+        return JsonResponse(data={'stat': hits})
 
 
 class StartUserView(View):
@@ -69,3 +71,15 @@ class StartUserStatView(View):
     def get(self, request):
         data = {'total': UserCount.objects.first().user_count}
         return JsonResponse(data=data)
+
+
+class NomineesView(View):
+    def get(self, request):
+        nominees = Vote.objects.annotate(delay=F('vote_datetime') - F('choice__question_id__activation_datetime'))
+        nominees = nominees.values('user_id').annotate(
+            wrong_ans=Count('choice', filter=Q(choice__is_game_over=True)),
+            avg_delay=Avg('delay'),
+        )
+        nominees_sorted = nominees.order_by('wrong_ans', 'avg_delay')
+        nominees_list = [nominee['user_id'] for nominee in nominees_sorted]
+        return JsonResponse(data=nominees_list[:10], safe=False)
