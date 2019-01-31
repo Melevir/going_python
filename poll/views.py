@@ -23,7 +23,7 @@ class ActiveQuestionDetailView(View):
         try:
             question = Question.objects.get(is_active=True)
         except ObjectDoesNotExist:
-            HttpResponseNotFound()
+            return HttpResponseNotFound()
 
         choices = question.choices.all()
         options = [{'id': choice.id, 'text': choice.choice_text} for choice in choices]
@@ -38,8 +38,8 @@ class ActiveQuestionDetailView(View):
 
 class VoteView(View):
     def post(self, request, **kwargs):
-        question = get_object_or_404(id=kwargs['question_id'])
-        option = get_object_or_404(id=kwargs['option_id'])
+        question = get_object_or_404(Question, id=kwargs['question_id'])
+        option = get_object_or_404(Choice, id=kwargs['option_id'])
 
         if option.question != question or not question.is_active or ('user_id' not in request.GET):
             return HttpResponseBadRequest()
