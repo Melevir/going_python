@@ -9,7 +9,7 @@ from django.db.models import Avg, Count, F, Q
 
 class ActivationView(View):
     def post(self, request, **kwargs):
-        question = get_object_or_404(id=kwargs['question_id'])
+        question = get_object_or_404(Question, id=kwargs['question_id'])
         Question.objects.filter(is_active=True).update(is_active=False)
         question.is_active = True
         question.activation_datetime = datetime.now()
