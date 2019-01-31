@@ -55,7 +55,7 @@ class VoteView(View):
 
 class StatView(View):
     def get(self, request, **kwargs):
-        question = get_object_or_404(id=kwargs['question_id'])
+        question = get_object_or_404(Question, id=kwargs['question_id'])
         choices = question.choices.all()
         hits = [{'id': choice.id, 'hits': choice.votes.count()} for choice in choices]
         return JsonResponse(data={'stat': hits})
