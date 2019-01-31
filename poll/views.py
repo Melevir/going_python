@@ -83,3 +83,10 @@ class NomineesView(View):
         nominees_sorted = nominees.order_by('wrong_ans', 'avg_delay')
         nominees_list = [nominee['user_id'] for nominee in nominees_sorted]
         return JsonResponse(data=nominees_list[:10], safe=False)
+
+
+class RestartPollView(View):
+    def post(self, request, **kwargs):
+        question = get_object_or_404(Question, id=kwargs['question_id'])
+        question.choices.all().delete()
+        return HttpResponse()
