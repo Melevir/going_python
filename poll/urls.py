@@ -1,9 +1,8 @@
 from django.urls import path
 from django.views.decorators.csrf import csrf_exempt
 
-from poll.views import ActivationView, ActiveQuestionDetailView, VoteView, StatView, NomineesView
+from poll.views import ActivationView, ActiveQuestionDetailView, VoteView, StatView, NomineesView, RestartPollView
 
-from going_python.poll.views import RestartPollView
 
 urlpatterns = [
     path('<int:question_id>/activate/', csrf_exempt(ActivationView.as_view())),
